@@ -1,0 +1,28 @@
+.button {
+    position: fixed;
+    z-index: 1;
+    right: 40px;
+    bottom: 40px;
+    width: 50px;
+    height: 50px;
+    border-radius: 20%;
+    text-align: center;
+    line-height: 50px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #f1f1f1;
+    background: #595a5c;
+    cursor: pointer;
+    box-shadow: 5px 5px 6px 0px rgba(0,0,0,0.8);
+    -webkit-box-shadow: 5px 5px 6px 0px rgba(0,0,0,0.8);
+    -moz-box-shadow: 5px 5px 6px 0px rgba(0,0,0,0.8);
+    transition: transform .06s ease;
+}
+
+.note {
+    color: #727070;
+    padding: 40px;
+    margin: 20px;
+    background: #fff;
+    border: solid 1px #e9e9e9;
+}
