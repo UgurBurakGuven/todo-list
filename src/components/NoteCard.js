@@ -1,7 +1,7 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 
-function Notes(props) {
+function NoteCard(props) {
   return (
     <Card className={" d-flex col-md-11 p-2  m-5"}>
       <Card.Header as="h5">NOT</Card.Header>
@@ -12,4 +12,4 @@ function Notes(props) {
   );
 }
 
-export default Notes;
+export default NoteCard;

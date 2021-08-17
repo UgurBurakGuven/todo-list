@@ -1,27 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navbar, Container, Button } from "react-bootstrap";
-import Notes from "../components/Notes";
+import NoteCard from "../components/NoteCard";
+import localforage from "localforage";
 
 export default function Home() {
-  const [text, setText] = useState({
-    text: "",
-  });
+  const [text, setText] = useState("");
+  const [notes, setNotes] = useState([]);
 
-  const [note, setNote] = useState({
-    notes: [],
-  });
+  useEffect(() => {
+    localforage.getItem("notes", function (err, notes) {
+      notes = notes || [];
+      setNotes(notes);
+    });
+  }, []);
 
   const addNote = () => {
-    if (text.text === "") {
+    if (text === "") {
       return;
     }
-    note.notes.push(text.text);
-    setText({ text: "" });
+    localforage
+      .setItem("notes", [text])
+      .then(() => {})
+      .catch((err) => {
+        console.log(err);
+      });
+
+    localforage.getItem("notes", function (err, notes) {
+      notes = notes || [];
+      notes.push(text);
+      setNotes(notes);
+      localforage.setItem("notes", notes).then(() => {
+        return localforage.getItem("notes", function (err, notes) {
+          console.log(notes);
+        });
+      });
+    });
+
+    setText("");
   };
   const updateText = (e) => {
-    setText({ text: e.target.value });
+    setText(e.target.value);
   };
-  let notes = note.notes.map((val, key) => <Notes key={key} text={val} />);
 
   return (
     <>
@@ -30,7 +49,11 @@ export default function Home() {
           <Navbar.Brand href="#">Todo List</Navbar.Brand>
         </Container>
       </Navbar>
-      <div>{notes}</div>
+      <div>
+        {notes.map((val, key) => (
+          <NoteCard key={key} text={val} />
+        ))}
+      </div>
       <Button
         className={"position-fixed"}
         style={{
