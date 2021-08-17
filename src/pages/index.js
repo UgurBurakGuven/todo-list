@@ -76,7 +76,7 @@ export default function Home() {
         +
       </Button>
       <input
-        placeholder={"Enter Note"}
+        placeholder={"Enter Notes"}
         type="text"
         className={"bottom-0 position-fixed w-100 p-1 btn-outline- border-0"}
         value={text.text}
