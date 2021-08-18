@@ -1,13 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { Navbar, Container, Button, Row, Col } from "react-bootstrap";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Navbar,
+  Container,
+  Button,
+  Col,
+  OverlayTrigger,
+} from "react-bootstrap";
+import { Popover, PopoverHeader, PopoverBody } from "reactstrap";
 import NoteCard from "../components/NoteCard";
 import localforage from "localforage";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import Link from "next/link";
+import { BsQuestionCircle } from "react-icons/bs";
+import { BiTrash } from "react-icons/bi";
+import { MdEdit } from "react-icons/md";
+import { CgAddR } from "react-icons/cg";
 
 export default function Home() {
   const [text, setText] = useState("");
   const [notes, setNotes] = useState([]);
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(notes.length);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const toggle = () => setPopoverOpen(!popoverOpen);
 
   useEffect(() => {
     localforage.getItem("notes", function (err, notes) {
@@ -17,9 +31,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    localforage.getItem("notes", function (err, arrayNotes) {
-      setCounter(arrayNotes.length);
-    });
+    setCounter(notes.length);
   }, [notes]);
 
   function onDelete(id) {
@@ -33,10 +45,11 @@ export default function Home() {
     });
   }
   const addNote = (event) => {
+    event.preventDefault();
     if (text === "") {
+      alert("Please Write Something!");
       return;
     }
-    event.preventDefault();
     localforage.getItem("notes", function (err, notes) {
       notes = notes || [];
       notes.push({
@@ -51,6 +64,22 @@ export default function Home() {
       });
     });
   };
+
+  function onEdit(text, id) {
+    localforage.getItem("notes", function (err, lsNotes) {
+      const note = lsNotes.find((o) => o.id === id);
+      const index = lsNotes.indexOf(note);
+      if (index > -1) {
+        lsNotes.splice(index, 1);
+      }
+      lsNotes.push({
+        text,
+        id,
+      });
+      localforage.setItem("notes", lsNotes).then(() => setNotes(lsNotes));
+    });
+  }
+
   const updateText = (e) => {
     setText(e.target.value);
   };
@@ -75,15 +104,44 @@ export default function Home() {
               style={{ right: "2rem" }}
             >
               <li style={{ color: "white" }}>Notes = {counter}</li>
+              <li>
+                <BsQuestionCircle
+                  className={"mx-5"}
+                  style={{ color: "white", cursor: "pointer" }}
+                  size={30}
+                  id={"Popover1"}
+                  type={"button"}
+                />
+                <Popover
+                  placement="bottom"
+                  isOpen={popoverOpen}
+                  target="Popover1"
+                  toggle={toggle}
+                >
+                  <PopoverHeader>User Guide</PopoverHeader>
+                  <PopoverBody>
+                    + You can remove your notes if you click trash icon{" "}
+                    {<BiTrash size={20} />} <br />
+                    <br />+ You can edit your notes if you click pencil icon{" "}
+                    {<MdEdit size={20} />}
+                    <br />
+                    <br />+ You can add your note to Todo List{" "}
+                    {<CgAddR size={20} />}
+                  </PopoverBody>
+                </Popover>
+              </li>
             </ul>
           </Col>
         </Container>
       </Navbar>
-      <div>
-        {notes.map((note, index) => (
-          <NoteCard key={index} note={note} onDelete={onDelete} />
+      <TransitionGroup>
+        {notes.map((note) => (
+          <CSSTransition key={note.id} timeout={500} classNames="item">
+            <NoteCard note={note} onDelete={onDelete} onEdit={onEdit} />
+          </CSSTransition>
         ))}
-      </div>
+      </TransitionGroup>
+
       <div
         className={"w-100 bg-dark bottom-0 position-fixed"}
         style={{ height: "4rem" }}
@@ -93,6 +151,7 @@ export default function Home() {
             className={"position-fixed  float-end mx-sm-5"}
             type={"submit"}
             style={{
+              cursor: "pointer",
               zIndex: "1",
               lineHeight: "1rem",
               bottom: "0.6rem",
@@ -120,6 +179,7 @@ export default function Home() {
             value={text}
             onChange={(e) => updateText(e)}
             style={{
+              cursor: "text",
               color: "#f1f1f1",
               fontSize: "1rem",
               marginBottom: "0.3rem",
