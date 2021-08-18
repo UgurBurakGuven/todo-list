@@ -19,14 +19,10 @@ function NoteCard(props) {
       <Card.Body>
         {visibleInput ? (
           <>
-            <form
-              id="deneme"
-              onSubmit={(id) => props.onEdit(inputChange, props.note.id)}
-            >
-
+            <form onSubmit={(id) => props.onEdit(inputChange, props.note.id)}>
               <input
                 type="text"
-                className={"w-75 p-1"}
+                className={"w-75 p-1 "}
                 value={inputChange}
                 onChange={(e) => setInputChange(e.target.value)}
                 style={{
@@ -38,10 +34,10 @@ function NoteCard(props) {
               />
 
               <Button
-                className={" btn-success float-end"}
+                className={"flex-lg-wrap btn-success float-end"}
                 onClick={(id) => props.onEdit(inputChange, props.note.id)}
               >
-                Submit
+                save
               </Button>
             </form>
           </>

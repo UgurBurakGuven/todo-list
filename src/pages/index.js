@@ -88,7 +88,7 @@ export default function Home() {
     <>
       <Navbar expand="lg" variant="dark" className={"d-flex w-100"} bg="dark">
         <Container>
-          <Col className={"mx-2 "}>
+          <Col className={""}>
             <Link href={"/"} style={{ color: "#82d7f7" }}>
               <a
                 className={"text-decoration-none text-light ms-4"}
@@ -106,7 +106,7 @@ export default function Home() {
               <li style={{ color: "white" }}>Notes = {counter}</li>
               <li>
                 <BsQuestionCircle
-                  className={"mx-5"}
+                  className={"mx-3"}
                   style={{ color: "white", cursor: "pointer" }}
                   size={30}
                   id={"Popover1"}
