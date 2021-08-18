@@ -3,11 +3,11 @@ import { Navbar, Container, Button, Row, Col } from "react-bootstrap";
 import NoteCard from "../components/NoteCard";
 import localforage from "localforage";
 import Link from "next/link";
-import { error } from "next/dist/build/output/log";
 
 export default function Home() {
   const [text, setText] = useState("");
   const [notes, setNotes] = useState([]);
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     localforage.getItem("notes", function (err, notes) {
@@ -15,6 +15,12 @@ export default function Home() {
       setNotes(notes);
     });
   }, []);
+
+  useEffect(() => {
+    localforage.getItem("notes", function (err, arrayNotes) {
+      setCounter(arrayNotes.length);
+    });
+  }, [notes]);
 
   function onDelete(id) {
     localforage.getItem("notes", function (err, lsNotes) {
@@ -26,11 +32,11 @@ export default function Home() {
       localforage.setItem("notes", lsNotes).then(() => setNotes(lsNotes));
     });
   }
-  const addNote = () => {
+  const addNote = (event) => {
     if (text === "") {
       return;
     }
-
+    event.preventDefault();
     localforage.getItem("notes", function (err, notes) {
       notes = notes || [];
       notes.push({
@@ -51,17 +57,27 @@ export default function Home() {
 
   return (
     <>
-      <Navbar expand="lg" variant="dark" bg="dark">
-        <div className={"mx-2"}>
-          <Link href={"#"} style={{ color: "#82d7f7" }}>
-            <a
-              className={"text-decoration-none text-light ms-4"}
-              style={{ fontSize: "1.5rem" }}
+      <Navbar expand="lg" variant="dark" className={"d-flex w-100"} bg="dark">
+        <Container>
+          <Col className={"mx-2 "}>
+            <Link href={"/"} style={{ color: "#82d7f7" }}>
+              <a
+                className={"text-decoration-none text-light ms-4"}
+                style={{ fontSize: "1.5rem" }}
+              >
+                Todo List
+              </a>
+            </Link>
+          </Col>
+          <Col className={"w-100 "}>
+            <ul
+              className="nav w-100 justify-content-end"
+              style={{ right: "2rem" }}
             >
-              Todo List
-            </a>
-          </Link>
-        </div>
+              <li style={{ color: "white" }}>Notes = {counter}</li>
+            </ul>
+          </Col>
+        </Container>
       </Navbar>
       <div>
         {notes.map((note, index) => (
@@ -86,6 +102,7 @@ export default function Home() {
               textAlign: "center",
               fontSize: "1.7rem",
               fontWeight: "bold",
+              right: "1.5rem",
               color: "black",
               background: "#82d7f7",
               boxShadow: "0.3rem 0.3rem 0.4rem 0rem rgba(0,0,0,0.8)",
@@ -107,7 +124,7 @@ export default function Home() {
               fontSize: "1rem",
               marginBottom: "0.3rem",
               height: "3.4rem",
-              left: "2rem",
+              left: "6%",
               backgroundColor: " #3c3c3c",
             }}
           />
