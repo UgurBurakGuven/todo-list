@@ -1,5 +1,6 @@
 body {
   padding-bottom: 63px;
+  color: #727070;
 }
 
 .note {
@@ -8,4 +9,19 @@ body {
   margin: 20px;
   background: #fff;
   border: solid 1px #e9e9e9;
+}
+
+.item-enter {
+  opacity: 0;
+}
+.item-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+.item-exit {
+  opacity: 1;
+}
+.item-exit-active {
+  opacity: 0;
+  transition: opacity 500ms ease-in;
 }
