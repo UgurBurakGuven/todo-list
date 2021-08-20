@@ -1,11 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Navbar,
-  Container,
-  Button,
-  Col,
-  OverlayTrigger,
-} from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Navbar, Container, Button, Col } from "react-bootstrap";
 import { Popover, PopoverHeader, PopoverBody } from "reactstrap";
 import NoteCard from "../components/NoteCard";
 import localforage from "localforage";
@@ -16,11 +10,12 @@ import { BiTrash } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 import { CgAddR } from "react-icons/cg";
 
-export default function Home() {
+function Home() {
   const [text, setText] = useState("");
   const [notes, setNotes] = useState([]);
   const [counter, setCounter] = useState(notes.length);
   const [popoverOpen, setPopoverOpen] = useState(false);
+
   const toggle = () => setPopoverOpen(!popoverOpen);
 
   useEffect(() => {
@@ -31,6 +26,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    localforage.getItem("notes", function (err, notes) {
+      notes = notes || [];
+      setNotes(notes);
+    });
     setCounter(notes.length);
   }, [notes]);
 
@@ -54,18 +53,36 @@ export default function Home() {
       notes = notes || [];
       notes.push({
         text,
+        situation: "stabil",
         id: new Date().getTime(),
       });
       setNotes(notes);
       localforage.setItem("notes", notes).then(() => {
-        return localforage.getItem("notes", function (err, notes) {
+        return localforage.getItem("notes", function () {
           setText("");
         });
       });
     });
   };
 
-  function onEdit(text, id) {
+  function editSituation(text, situation, id) {
+    localforage.getItem("notes", function (err, Situation) {
+      const newSituation = Situation.find((o) => o.id === id);
+      const index = Situation.indexOf(newSituation);
+      if (index > -1) {
+        Situation.splice(index, 1);
+      }
+
+      Situation.push({
+        text,
+        id,
+        situation,
+      });
+      localforage.setItem("notes", Situation);
+    });
+  }
+
+  function onEdit(text, situation, id) {
     localforage.getItem("notes", function (err, lsNotes) {
       const note = lsNotes.find((o) => o.id === id);
       const index = lsNotes.indexOf(note);
@@ -74,6 +91,7 @@ export default function Home() {
       }
       lsNotes.push({
         text,
+        situation,
         id,
       });
       localforage.setItem("notes", lsNotes).then(() => setNotes(lsNotes));
@@ -137,7 +155,12 @@ export default function Home() {
       <TransitionGroup>
         {notes.map((note) => (
           <CSSTransition key={note.id} timeout={500} classNames="item">
-            <NoteCard note={note} onDelete={onDelete} onEdit={onEdit} />
+            <NoteCard
+              note={note}
+              editSituation={editSituation}
+              onDelete={onDelete}
+              onEdit={onEdit}
+            />
           </CSSTransition>
         ))}
       </TransitionGroup>
@@ -193,3 +216,5 @@ export default function Home() {
     </>
   );
 }
+
+export default Home;
