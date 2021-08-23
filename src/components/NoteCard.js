@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import { BiTrash } from "react-icons/bi";
 import { MdEdit } from "react-icons/md";
 
@@ -63,9 +63,9 @@ function NoteCard(props) {
               </>
             ) : null}
 
-            <div style={{ color: "black" }}>
-              {props.note.text}
-
+            <div style={{ color: "black" }}>{props.note.text}</div>
+            <div>
+              {" "}
               <BiTrash
                 size={25}
                 onClick={() => props.onDelete(props.note.id)}
@@ -178,7 +178,9 @@ function NoteCard(props) {
 
             <div style={{ color: "black", fontWeight: "bold" }}>
               {props.note.text}
-
+            </div>
+            <div>
+              {" "}
               <BiTrash
                 size={25}
                 onClick={() => props.onDelete(props.note.id)}
@@ -285,9 +287,9 @@ function NoteCard(props) {
               </>
             ) : null}
 
-            <div style={{ color: "white" }}>
-              {props.note.text}
-
+            <div style={{ color: "white" }}>{props.note.text}</div>
+            <div>
+              {" "}
               <BiTrash
                 onClick={() => props.onDelete(props.note.id)}
                 size={25}
