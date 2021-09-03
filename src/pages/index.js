@@ -143,7 +143,7 @@ function Home() {
                     <br />+ You can edit your notes if you click pencil icon{" "}
                     {<MdEdit size={20} />}
                     <br />
-                    <br />+ You can add your note to Todo List{" "}
+                    <br />+ You can add your notes to Todo List{" "}
                     {<CgAddR size={20} />}
                   </PopoverBody>
                 </Popover>
